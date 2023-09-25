@@ -19,7 +19,9 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/',[PostController::class,'index'])->name('home');
+Route::post('/posts',[PostController::class,'store']) -> middleware('auth');
 Route::get('/posts/{post:slug}',[PostController::class,'show']);
+
 Route::get('categories/posts/{category:slug}',[PostController::class,'getWithCategory']);
 Route::get('users/posts/{user:username}',[PostController::class,'getWithUser']);
 

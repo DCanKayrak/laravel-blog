@@ -6,7 +6,9 @@ use App\Http\Controllers\Controller;
 use App\Models\Category;
 use App\Models\Post;
 use App\Models\User;
+use Doctrine\Inflector\Rules\French\Rules;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 
 class PostController extends Controller
 {
@@ -23,6 +25,21 @@ class PostController extends Controller
         return view('post',[
             'post'=> $post
         ]);
+    }
+
+    function store(){
+        $newPost = request()->validate([
+           'title'=>'required',
+           'slug'=>['required',Rule::unique('posts','slug')],
+           'category_id'=>['required',Rule::exists('categories','id')],
+            'content'=>'required|min:3'
+        ]);
+
+        $newPost['user_id'] = auth()->id();
+
+        Post::create($newPost);
+
+        return redirect('/');
     }
 
     function getWithUser(User $user){
